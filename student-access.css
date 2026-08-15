@@ -1,0 +1,35 @@
+.student-gate-active, .student-gate-active body { overflow: hidden !important; }
+.student-gate { position: fixed; inset: 0; z-index: 99999; display: grid; place-items: center; padding: 18px; background: rgba(9, 28, 48, .78); backdrop-filter: blur(10px); }
+.student-gate-card { width: min(680px, 100%); max-height: calc(100vh - 36px); overflow: auto; background: #fff; border-top: 7px solid #d8aa45; box-shadow: 0 24px 80px rgba(0,0,0,.28); }
+.student-gate-brand { display: flex; align-items: center; gap: 16px; padding: 22px 28px; color: #fff; background: #122947; }
+.student-gate-brand img { width: 68px; height: 68px; object-fit: contain; background: #0d1738; }
+.student-gate-brand div { display: grid; gap: 5px; }
+.student-gate-brand span { font: 700 12px/1.2 system-ui,sans-serif; letter-spacing: .08em; color: #9fe0d6; }
+.student-gate-brand strong { font: 800 17px/1.25 system-ui,sans-serif; }
+.student-gate-copy { padding: 30px 32px 10px; }
+.student-gate-eyebrow { margin: 0 0 8px !important; color: #087f77 !important; font: 800 12px/1.2 system-ui,sans-serif; letter-spacing: .08em; text-transform: uppercase; }
+.student-gate-copy h2 { margin: 0 0 10px; color: #10243e; font: 800 34px/1.15 system-ui,sans-serif; letter-spacing: 0; }
+.student-gate-copy > p:last-child { margin: 0; color: #566779; font: 500 16px/1.6 system-ui,sans-serif; }
+.student-gate-form { display: grid; gap: 20px; padding: 20px 32px 34px; }
+.student-gate-form label { display: grid; gap: 8px; color: #10243e; font: 750 15px/1.35 system-ui,sans-serif; }
+.student-gate-form small { color: #657586; font: 500 13px/1.45 system-ui,sans-serif; }
+.student-gate-form input, .student-gate-form select { width: 100%; min-height: 54px; padding: 0 15px; border: 1px solid #b9c7cf; border-radius: 4px; background: #fff; color: #10243e; font: 600 16px/1.2 system-ui,sans-serif; }
+.student-gate-form input:focus, .student-gate-form select:focus { outline: 3px solid rgba(8,127,119,.18); border-color: #087f77; }
+.student-gate-form button { min-height: 55px; border: 0; border-radius: 4px; background: #087f77; color: #fff; cursor: pointer; font: 800 16px/1.2 system-ui,sans-serif; }
+.student-gate-error { margin: -5px 0 0; padding: 11px 13px; border-left: 4px solid #b14d3b; background: #fff2ef; color: #843425; font: 650 14px/1.45 system-ui,sans-serif; }
+.student-profile-badge { display: grid; align-content: center; min-width: 130px; padding: 8px 13px; border-left: 3px solid #d8aa45; color: inherit; }
+.student-profile-badge span { font-size: 10px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; opacity: .7; }
+.student-profile-badge strong { font-size: 14px; line-height: 1.25; }
+.student-profile-badge small { font-size: 11px; opacity: .75; }
+.score-record-status { flex-basis: 100%; margin: 12px 0 0; padding: 12px 14px; border-left: 4px solid #087f77; background: #edf8f5; color: #165d57; font-weight: 700; }
+.score-record-status.is-error { border-color: #b14d3b; background: #fff2ef; color: #843425; }
+@media (max-width: 640px) {
+  .student-gate { padding: 0; place-items: stretch; }
+  .student-gate-card { width: 100%; max-height: 100vh; min-height: 100vh; border-top-width: 5px; }
+  .student-gate-brand { padding: 18px 20px; }
+  .student-gate-brand img { width: 56px; height: 56px; }
+  .student-gate-copy { padding: 26px 22px 8px; }
+  .student-gate-copy h2 { font-size: 29px; }
+  .student-gate-form { padding: 18px 22px 28px; }
+  .student-profile-badge { display: none; }
+}
