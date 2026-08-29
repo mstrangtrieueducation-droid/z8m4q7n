@@ -36,10 +36,10 @@ window.DISCOVER_SCORE_CONFIG = {
   "formResponseUrl": "https://docs.google.com/forms/u/0/d/e/1FAIpQLScm5maJLUzmM1lw-sTx5NG2A8BUONdWKhhEGoqfRRlsjTxOKA/formResponse",
   "entries": {
     "name": "entry.626306593",
-    "className": "entry.1998956975",
-    "assignmentCode": "entry.144780084",
-    "score": "entry.1804999547",
-    "total": "entry.1191306277",
-    "percent": "entry.567316915"
+    "className": "entry.567316915",
+    "assignmentCode": "entry.1998956975",
+    "score": "entry.144780084",
+    "total": "entry.1804999547",
+    "percent": "entry.1191306277"
   }
 };
