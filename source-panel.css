@@ -1,0 +1,7 @@
+.original-source { margin: 1rem 0; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; background: #fff; }
+.original-source summary { cursor: pointer; font-weight: 700; color: #243854; }
+.original-source p { font-size: .9rem; color: #475569; }
+.original-source img { display: block; width: 100%; height: auto; max-width: 1050px; margin: 12px auto; }
+.original-source > a:last-child { display: inline-block; margin-top: 8px; }
+.test-section [hidden] { display: none !important; }
+@media print { .original-source { break-inside: avoid; } }

@@ -7,7 +7,7 @@ const results = document.querySelector("#results");
 const answerReview = document.querySelector("#answerReview");
 const scoreValue = document.querySelector("#scoreValue");
 const scoreMessage = document.querySelector("#scoreMessage");
-const STORAGE_KEY = "discover3-written-test8-v1";
+const STORAGE_KEY = "discover3-written-test8-v1-source-audit-v2";
 
 validateTest();
 render();
@@ -211,9 +211,7 @@ function normalize(value) {
   return String(value || "").toLowerCase().replace(/[\u2018\u2019`]/g, "'").replace(/[?.!,]/g, "").replace(/-/g, " ").replace(/\s+/g, " ").trim();
 }
 
-function matches(value, answers) {
-  return answers.some((answer) => normalize(answer) === normalize(value));
-}
+function matches(value, accepted) { return DiscoverAnswerMatcher.matches(value, accepted); }
 
 function missing() {
   const output = [];
@@ -234,6 +232,7 @@ function grade() {
       const correct = matches(value, part.answers);
       return { ...part, value, correct };
     });
+    DiscoverAnswerMatcher.gradeRelations(question, partReviews);
     const allCorrect = partReviews.every((part) => part.correct);
     const earned = question.points === partReviews.length
       ? partReviews.filter((part) => part.correct).length
