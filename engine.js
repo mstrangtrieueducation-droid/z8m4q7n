@@ -256,8 +256,8 @@ function reviewMarkup(review) {
   const answers = review.parts.map((part) => `
     <div class="review-part ${part.correct ? "" : "is-wrong"}">
       ${review.parts.length > 1 ? `<p><b>${part.label || "Answer"}</b></p>` : ""}
-      <div class="review-answer"><span>Your answer: <b>${html(part.value || "(blank)")}</b></span><span>Correct answer: <b>${html(part.answers[0])}</b></span></div>
-      <p class="explanation"><b>Explanation:</b> ${part.explanation}</p>
+      <div class="review-answer"><span>Your answer: <b>${html(part.value || "(blank)")}</b></span><span>Correct answer: <b>${html(DiscoverAnswerDisplay.formatAnswer(part.answers[0]))}</b></span></div>
+      <p class="explanation"><b>Explanation:</b> ${escapeHtml(DiscoverAnswerDisplay.formatExplanation(part.explanation))}</p>
     </div>`).join("");
   return `<article class="review-card ${review.correct ? "" : "is-wrong"}">
     <div class="review-head"><h3>Section ${review.section.label}, question ${review.number}</h3><span class="review-status">${review.earned}/${review.question.points} point${review.question.points === 1 ? "" : "s"}</span></div>
