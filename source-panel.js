@@ -1,6 +1,38 @@
 /* Keep original web images and add responsive labels without altering pixels. */
 (function () {
   'use strict';
+  // Preserve source anchors; separate enlarged labels when a narrow image brings them together.
+  function spaceMarkers(wrapper) {
+    const bounds = wrapper.getBoundingClientRect();
+    if (!bounds.width || !bounds.height) return;
+    const points = Array.from(wrapper.querySelectorAll(':scope > .source-object-marker'), badge => ({
+      badge, anchorX: Number(badge.dataset.x) * bounds.width,
+      anchorY: Number(badge.dataset.y) * bounds.height,
+      radius: badge.getBoundingClientRect().width / 2, dx: 0, dy: 0
+    }));
+    for (let pass = 0; pass < 16; pass++) {
+      let moved = false;
+      for (let i = 0; i < points.length; i++) for (let j = i + 1; j < points.length; j++) {
+        const a = points[i], b = points[j];
+        const vx = b.anchorX + b.dx - a.anchorX - a.dx;
+        const vy = b.anchorY + b.dy - a.anchorY - a.dy;
+        const distance = Math.hypot(vx, vy), gap = a.radius + b.radius + 2 - distance;
+        if (gap <= 0.05) continue;
+        const ux = distance ? vx / distance : 1, uy = distance ? vy / distance : 0;
+        a.dx -= ux * gap / 2; a.dy -= uy * gap / 2;
+        b.dx += ux * gap / 2; b.dy += uy * gap / 2;
+        moved = true;
+      }
+      if (!moved) break;
+    }
+    for (const point of points) {
+      point.badge.style.setProperty('--source-label-offset-x', point.dx + 'px');
+      point.badge.style.setProperty('--source-label-offset-y', point.dy + 'px');
+    }
+  }
+  const markerObserver = new ResizeObserver(entries => {
+    for (const entry of entries) spaceMarkers(entry.target);
+  });
   function addMarkers(img, figure, markers) {
     if (!markers.length && !(figure.vectorOverlays || []).length && !(figure.sourceText || []).length && !(figure.textContexts || []).length && !(figure.timeCaptions || []).length) return;
     const wrapper = document.createElement('div');
@@ -50,6 +82,7 @@
       badge.setAttribute('aria-hidden', 'true');
       wrapper.appendChild(badge);
     }
+    if (markers.length > 1) markerObserver.observe(wrapper);
     img.alt += ' · nhãn ' + markers.map(marker => marker.label).join(', ');
     if ((figure.sourceText || []).length) img.alt += ' · ' + figure.sourceText.map(item => item.text).join(' ');
     for (const context of figure.textContexts || []) {
