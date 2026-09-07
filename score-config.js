@@ -31,7 +31,9 @@ window.DISCOVER_SCORE_CONFIG = {
     "KIDS 35",
     "KIDS 36",
     "KIDS 37",
-    "KIDS 38"
+    "KIDS 38",
+    "KIDS 39",
+    "KIDS 40"
   ],
   "formResponseUrl": "https://docs.google.com/forms/u/0/d/e/1FAIpQLScm5maJLUzmM1lw-sTx5NG2A8BUONdWKhhEGoqfRRlsjTxOKA/formResponse",
   "entries": {
