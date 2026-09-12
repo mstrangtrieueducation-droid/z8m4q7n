@@ -103,6 +103,83 @@
     }
   }
 
+  // The letter cues are source data, separate from both image pixels and answers.
+  // This also supports the internal review reader, whose question hosts use data-question.
+  function mountQuestionCues(section, mapping, host, options = {}) {
+    if (!host) throw new Error('Missing source cue section host: ' + (section.key || section.letter));
+    const cues = mapping.questionCues || {};
+    if (typeof cues !== 'object' || Array.isArray(cues)) throw new Error('Invalid source question cues');
+    const hosts = Array.from(host.querySelectorAll('.question[data-id],.question[data-question]'));
+    const jobs = Object.entries(cues).map(([id, cue]) => {
+      if (section.questions.filter(question => question.id === id).length !== 1) {
+        throw new Error('Unknown or ambiguous source cue question: ' + id);
+      }
+      if (!cue || [cue.letters, cue.pattern, cue.instruction].some(value => value !== undefined && typeof value !== 'string') ||
+          ![cue.letters, cue.pattern, cue.instruction].some(value => typeof value === 'string' && value.trim())) {
+        throw new Error('Invalid source letter cue: ' + id);
+      }
+      const matches = hosts.filter(article => (article.dataset.id || article.dataset.question) === id);
+      if (matches.length !== 1) throw new Error('Missing or ambiguous source cue host: ' + id);
+      const article = matches[0];
+      const prompts = article.querySelectorAll('.question-prompt,.prompt');
+      if (prompts.length !== 1) throw new Error('Missing or ambiguous source cue prompt: ' + id);
+      const controls = Array.from(article.querySelectorAll('input:not([type="hidden"]),textarea,select,button[data-choice]'));
+      if (options.requireControls !== false && !controls.length) throw new Error('Missing source cue answer field: ' + id);
+      const panels = Array.from(article.querySelectorAll('.source-question-cue'));
+      if (panels.length > 1) throw new Error('Duplicate source cue panels: ' + id);
+      return {id, cue, article, prompt: prompts[0], controls, panel: panels[0]};
+    });
+    // Validate every mapping first so an unknown question cannot leave a partially applied section.
+    for (const job of jobs) {
+      const panel = job.panel || document.createElement('div');
+      panel.className = 'source-question-cue';
+      panel.dataset.questionId = job.id;
+      panel.id = 'source-cue-' + encodeURIComponent(section.key || section.letter) + '-' + encodeURIComponent(job.id);
+      panel.replaceChildren();
+      for (const [label, value, className] of [
+        ['Đọc câu sau', job.cue.instruction, 'source-cue-instruction'],
+        ['Chữ cái cho sẵn', job.cue.letters, 'source-cue-letters'],
+        ['Gợi ý', job.cue.pattern, 'source-cue-pattern']
+      ]) {
+        if (!value || !value.trim()) continue;
+        const row = document.createElement('p');
+        row.className = 'source-cue-row';
+        const caption = document.createElement('span');
+        caption.className = 'source-cue-label';
+        caption.textContent = label;
+        const text = document.createElement('span');
+        text.className = className;
+        text.textContent = value;
+        row.append(caption, text);
+        panel.appendChild(row);
+      }
+      job.prompt.after(panel);
+      for (const control of job.controls) {
+        const ids = new Set((control.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean));
+        ids.add(panel.id);
+        control.setAttribute('aria-describedby', Array.from(ids).join(' '));
+      }
+    }
+    host.dataset.sourceQuestionCues = 'ready';
+  }
+
+  function reconcileChoiceValues(host) {
+    let cleared = 0;
+    host.querySelectorAll('[data-choice-group],.question[data-id]').forEach(group => {
+      const value = group.dataset.value;
+      if (!value) return;
+      const buttons = Array.from(group.querySelectorAll('[data-choice]'));
+      if (!buttons.length || buttons.some(button => button.dataset.value === value)) return;
+      delete group.dataset.value;
+      buttons.forEach(button => {
+        button.classList.remove('is-selected');
+        button.setAttribute('aria-pressed', 'false');
+      });
+      cleared++;
+    });
+    return cleared;
+  }
+
   function mount(sections, source) {
     document.body.classList.add('discover-inline-layout');
     sections.forEach((section, index) => {
@@ -114,6 +191,7 @@
       if ((mapping.fallback || []).length || (mapping.cards || []).length) {
         throw new Error('Inline layout cannot display PDF screenshot fallbacks: ' + key);
       }
+      mountQuestionCues(section, mapping, host);
       const replacements = new Map((mapping.inline || []).map(figure => [figure.original, figure]));
       host.querySelectorAll('.source-image,.question-image,.source-gallery img,.picture-choice img').forEach(img => {
         const oldPath = img.getAttribute('src');
@@ -167,6 +245,13 @@
       host.querySelectorAll('.numbered-source-image,.source-gallery').forEach(el => el.hidden = false);
       host.dataset.inlineFigures = 'ready';
     });
+    // Previously saved choices must still exist after source options are corrected.
+    if (reconcileChoiceValues(document)) {
+      if (typeof updateProgress === 'function') updateProgress();
+      else if (typeof update === 'function') update();
+      if (typeof saveProgress === 'function') saveProgress();
+      else if (typeof save === 'function') save();
+    }
   }
-  window.DiscoverSourceView = Object.freeze({mount});
+  window.DiscoverSourceView = Object.freeze({mount, mountQuestionCues, reconcileChoiceValues});
 })();

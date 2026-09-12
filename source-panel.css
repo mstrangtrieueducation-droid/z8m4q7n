@@ -1,5 +1,6 @@
 /* Markers share their image's responsive coordinate system. */
 .discover-inline-layout .document-actions { display: none !important; }
+.discover-inline-layout .question-prompt { white-space: pre-wrap; }
 .test-section [hidden] { display: none !important; }
 .source-labelled-image { position: relative; isolation: isolate; display: block; padding: 0; background: #fff; }
 .source-labelled-section { margin: 18px 30px; max-width: calc(100% - 60px); }
@@ -18,3 +19,10 @@
 .numbered-source-image .source-labelled-section { max-width: none; margin: 0; }
 @media (max-width: 600px) { .source-labelled-section { margin: 16px 12px; max-width: calc(100% - 24px); } }
 @media print { .source-object-marker { box-shadow: none; } }
+.source-question-cue { margin: 0 0 14px; padding: 12px 14px; border: 1px solid #bbccd8; border-radius: 9px; background: #f4f8fb; color: #172f40; min-width: 0; }
+.source-cue-row { margin: 0; min-width: 0; }
+.source-cue-row + .source-cue-row { margin-top: 10px; }
+.source-cue-label { display: block; margin-bottom: 3px; font-size: 13px; line-height: 1.5; font-weight: 600; }
+.source-cue-letters, .source-cue-pattern, .source-cue-instruction { display: block; white-space: pre-wrap; overflow-wrap: anywhere; font-size: clamp(18px, 2.6vw, 22px); line-height: 1.55; font-weight: 750; }
+.source-cue-pattern { font-family: ui-monospace, Consolas, monospace; }
+@media print { .source-question-cue { break-inside: avoid; background: #fff; } }
